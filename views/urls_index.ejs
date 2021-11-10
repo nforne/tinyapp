@@ -27,14 +27,15 @@
             <td><a href= http://localhost:8080/urls/<%= url %> ><%= url %></a></td>
             <td><%= urls[url] %></td>
             <td>
-              <form method="POST" action='/urls/<%=url%>/delete'>             
-                <label for="shortURL"><% 'shortURL' %></label>             
+              <form method="POST" action='/urls/<%=url%>/delete'>                                
                 <button type="submit" value='<%url%>' class="btn btn-primary" style="font-size: large; color: red; background-color: white; border-color: red;">Remove</button>
+                <label for="shortURL"><% 'shortURL' %></label> 
               </form>
             </td>
             <td>
-              <form method="GET" action='/urls/<%=url%>/delete'>
-                <button type="submit" class="btn btn-primary" style="font-size: large; color: red; background-color: white; border-color: red;">Update</button>
+              <form method="POST" action='/urls/<%=url%>/update'>
+                <button type="submit" value='<%= urls[url] %>' class="btn btn-primary" style="font-size: large; color: red; background-color: white; border-color: red;">Update</button>
+                <label for="Update"><% 'shortURL' %></label> 
               </form>
             </td>
           </tr>
