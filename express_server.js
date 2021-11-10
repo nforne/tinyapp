@@ -41,10 +41,17 @@ app.post("/urls", (req, res) => {
     let shortURL = generateRandomString();
     if (!urlDBKeys.includes(shortURL)) {
       urlDatabase[shortURL] = req.body.longURL;
+      res.redirect(`/urls/:${shortURL}`)
       break;
     }
   }  
-  res.redirect('/urls')
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  // const longURL = ...
+  console.log(req.params); // whay is it adding ':' to the shortURL?
+  const longURL = urlDatabase[req.params.shortURL.replace(':', '')];
+  res.redirect(longURL);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
