@@ -7,6 +7,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
 
+// const urlDatabase = require('./db')
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -42,7 +43,8 @@ app.post("/urls", (req, res) => {
     if (!urlDBKeys.includes(shortURL)) {
       urlDatabase[shortURL] = req.body.longURL;
       res.redirect(`/urls/:${shortURL}`)
-      break;
+      // break;
+      return urlDatabase;
     }
   }  
 });
@@ -55,7 +57,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]/* What goes here? */ };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
   res.render("urls_show", templateVars);
 });
 
