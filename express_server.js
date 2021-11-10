@@ -36,8 +36,15 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  let urlDBKeys = Object.keys(urlDatabase);
+  while(true) { // check to make sure there is no shortURL duplication
+    let shortURL = generateRandomString();
+    if (!urlDBKeys.includes(shortURL)) {
+      urlDatabase[shortURL] = req.body.longURL;
+      break;
+    }
+  }  
+  res.redirect('/urls')
 });
 
 app.get("/urls/:shortURL", (req, res) => {
