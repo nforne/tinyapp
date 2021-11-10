@@ -42,15 +42,15 @@ app.post("/urls", (req, res) => {
     let shortURL = generateRandomString();
     if (!urlDBKeys.includes(shortURL)) {
       urlDatabase[shortURL] = req.body.longURL;
-      res.redirect(`/urls/:${shortURL}`)
-      // break;
-      return urlDatabase;
+      res.redirect(`/urls/${shortURL}`)
+      console.log(urlDatabase);
+      break;
+      // return urlDatabase;
     }
   }  
 });
 
-app.post('/urls/:shortURL/delete', (req, res) => {
-  
+app.post('/urls/:shortURL/delete', (req, res) => {  
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls")
 });
@@ -58,7 +58,8 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   // const longURL = ...
   console.log(req.params); // whay is it adding ':' to the shortURL?
-  const longURL = urlDatabase[req.params.shortURL.replace(':', '')];
+  console.log(req.body)
+  const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
