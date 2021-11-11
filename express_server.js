@@ -24,6 +24,12 @@ const users = {
     username : 'username2',
     email: "user2@example.com", 
     password: "dishwasher-funk"
+  },
+  Tukj: {
+    username: 'Martin',
+    email: 'wnforne@gmail.com',
+    password: 'js;kfjdl;fkj',
+    id: 'Tukj'
   }
 }
 
@@ -112,7 +118,8 @@ app.post("/register", (req, res) => {
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 app.post("/login", (req, res) => {
-  // console.log(req.body)
+  console.log(req.body)
+  console.log(users);
 
   if (req.body.username) {
     for (let i of usersdbIDs) {
@@ -131,13 +138,15 @@ app.post("/login", (req, res) => {
      }
   } else {
     loginID = '';
-    res.clearCookie('username');
-    const templateVars = { urls: {}, username:''};
-    
-    // console.log(users);
-    
-    res.render("urls_index", templateVars);
+    res.clearCookie('username'); 
+    res.render("urls_login");
   }
+});
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+app.get("/login", (req, res) => {
+  res.render("urls_login");
 });
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
