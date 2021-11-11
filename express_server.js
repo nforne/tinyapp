@@ -9,11 +9,20 @@ const cookieParser = require('cookie-parser');
 
 app.set("view engine", "ejs");
 
-const users = [
-  {username: 'nforne', email: 'ab@ab.com', password: 'xyz123'},
-  {username: 'Martin', email: 'cd@cd.com', password: 'abc123'}
-]
-
+const users = { 
+  "user1RandomID": {
+    id: "userRandomID",
+    username : 'username1', 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    username : 'username2',
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -34,6 +43,11 @@ function generateRandomString() {
 
 app.get("/", (req, res) => {
   res.send("Hello!");
+});
+
+app.get("/register", (req, res) => {
+  const templateVars = { urls: {}, username:''};
+  res.render('user_registrationf', templateVars);
 });
 
 app.post("/login", (req, res) => {
