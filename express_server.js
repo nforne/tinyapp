@@ -121,13 +121,13 @@ app.post("/login", (req, res) => {
   console.log(req.body)
   console.log(users);
 
-  if (req.body.username) {
+  if (req.body.email && req.body.password) {
     for (let i of usersdbIDs) {
-      if (users[i]['username'] === String(req.body.username)) {
+      if (users[i]['email'] === String(req.body.email) && users[i]['password'] === String(req.body.password)) {
 
         loginID = [users[i]['username']];        
 
-        res.cookie('username', req.body.username /*, {httpOnly:true}*/);
+        res.cookie('user_id', users[i]['id'] /*, {httpOnly:true}*/);
         const templateVars = {
           username: req.body.username,
           urls: urlDatabase
@@ -138,8 +138,10 @@ app.post("/login", (req, res) => {
      }
   } else {
     loginID = '';
-    res.clearCookie('username'); 
-    res.render("urls_login");
+    res.clearCookie('user_id')
+    res.render("urls_login",);
+    // res.redirect('/login')
+    // res.render('urls_alert'); 
   }
 });
 
