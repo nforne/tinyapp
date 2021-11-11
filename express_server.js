@@ -16,7 +16,7 @@ const users = {
   "user1RandomID": {
     id: "userRandomID",
     username : 'username1', 
-    email: "user@example.com", 
+    email: "user1@example.com", 
     password: "purple-monkey-dinosaur"
   },
  "user2RandomID": {
@@ -57,6 +57,18 @@ function generateRandomString(n) {
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+const emailCheck = (email) => {
+  let outPut = false;
+  for (let i of usersdbIDs) {
+    if (users[i]['email'] === email) {
+      outPut = true;
+    } 
+  }
+  return outPut;
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -71,10 +83,13 @@ app.get("/register", (req, res) => {
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 app.post("/register", (req, res) => {
-  console.log(req.body.email.length);
+  // console.log(req.body.email.length);
 
   if (req.body.email.length === 0 || req.body.password.length === 0) {
     res.send("<html><body>404 \n<b>Email or password field empty. Not optional, must be filled</b></body></html>\n");
+    
+  } else if (emailCheck(req.body.email)) {
+    res.send("<html><body>404 \n<b>Email already in use by someone else! Try another.</b></body></html>\n");
     
   } else {
     while (true) { // check to make sure there is no userID duplication at auto generate
