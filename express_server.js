@@ -15,6 +15,8 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+let loginID = '';
+
 function generateRandomString() {
   const nums_letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   const alphanumeric = nums_letters.split('');
@@ -31,8 +33,9 @@ app.get("/", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log(req.body)
-  
+  // console.log(req.body)
+  if (req.body.username) {
+  loginID = [String(req.body.username)];
   res.cookie('username', req.body.username /*, {httpOnly:true}*/);
   const templateVars = {
     username: req.body.username,
@@ -40,16 +43,23 @@ app.post("/login", (req, res) => {
     // ... any other vars
   };
   res.render("urls_index", templateVars);
+  } else {
+    loginID = '';
+    res.clearCookie('username');
+    const templateVars = { urls: {}, username:''};
+    res.render("urls_index.ejs", templateVars);
+  }
+  
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.body.username};
+  const templateVars = { urls: urlDatabase, username: loginID[0]};
   res.render("urls_index.ejs", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    username: req.body.username,
+    username: loginID[0],
     urls: urlDatabase
     // ... any other vars
   };
@@ -99,7 +109,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.body.username,};
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: loginID[0],};
   res.render("urls_show", templateVars);
 });
 
