@@ -30,11 +30,11 @@ const urlDatabase = {
 
 let loginID = '';
 
-function generateRandomString() {
+function generateRandomString(n) {
   const nums_letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   const alphanumeric = nums_letters.split('');
   let key = "";
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < n; i++) {
     const index = Math.floor(Math.random() * 62);
     key += alphanumeric[index];
   }
@@ -48,6 +48,13 @@ app.get("/", (req, res) => {
 app.get("/register", (req, res) => {
   const templateVars = { urls: {}, username:''};
   res.render('user_registrationf', templateVars);
+});
+
+app.post("/register", (req, res) => {
+  console.log(req.body);
+  console.log(req.params);
+  // const templateVars = { urls: {}, username:''};
+  // res.render('user_registrationf', templateVars);
 });
 
 app.post("/login", (req, res) => {
@@ -91,7 +98,7 @@ app.get("/urls/new", (req, res) => {
 app.post("/urls", (req, res) => {
   let urlDBKeys = Object.keys(urlDatabase);
   while (true) { // check to make sure there is no shortURL duplication
-    let shortURL = generateRandomString();
+    let shortURL = generateRandomString(6);
     if (!urlDBKeys.includes(shortURL)) {
       urlDatabase[shortURL] = req.body.longURL;
       res.redirect(`/urls/${shortURL}`);
@@ -110,7 +117,7 @@ app.post('/urls/:shortURL/update', (req, res) => {
     }
   }
   while (true) { // check to make sure there is no shortURL duplication
-    let shortURL = generateRandomString();
+    let shortURL = generateRandomString(6);
     if (!urlDBKeys.includes(shortURL)) {
       urlDatabase[shortURL] = longURL[0];
       res.redirect(`/urls/${shortURL}`);
