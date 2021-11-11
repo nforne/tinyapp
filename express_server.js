@@ -23,6 +23,9 @@ const users = {
     password: "dishwasher-funk"
   }
 }
+
+const usersdbIDs = Object.keys(users);
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -52,29 +55,47 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   console.log(req.body);
-  console.log(req.params);
-  // const templateVars = { urls: {}, username:''};
-  // res.render('user_registrationf', templateVars);
+  let templateVars = {};
+  while (true) { // check to make sure there is no userID duplication at auto generate
+    let randomID = generateRandomString(4);
+    if (!usersdbIDs.includes(randomID)) {      
+      let bodyjson = req.body;
+      bodyjson['id'] = randomID;
+      users[randomID] = bodyjson
+      templateVars = bodyjson;
+      break;
+    }
+  }
+  
+  res.render('urls_index.ejs', templateVars);
+
 });
 
 app.post("/login", (req, res) => {
   // console.log(req.body)
+
   if (req.body.username) {
-    loginID = [String(req.body.username)];
-    res.cookie('username', req.body.username /*, {httpOnly:true}*/);
-    const templateVars = {
-      username: req.body.username,
-      urls: urlDatabase
-    // ... any other vars
-    };
-    res.render("urls_index", templateVars);
+    for (let i of usersdbIDs) {
+      if (users[i]['username'] === String(req.body.username)) {
+
+        loginID = [users[i]['username']];
+        
+
+        res.cookie('username', req.body.username /*, {httpOnly:true}*/);
+        const templateVars = {
+          username: req.body.username,
+          urls: urlDatabase
+        // ... any other vars
+        };
+        res.render("urls_index", templateVars);
+      }
+     }
   } else {
     loginID = '';
     res.clearCookie('username');
     const templateVars = { urls: {}, username:''};
-    res.render("urls_index.ejs", templateVars);
+    res.render("urls_index", templateVars);
   }
-  
 });
 
 app.get("/urls", (req, res) => {
