@@ -4,7 +4,7 @@ const PORT = 8080; // default port 8080
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 
 
 app.set("view engine", "ejs");
@@ -35,14 +35,14 @@ app.get("/", (req, res) => {
 app.post("/login", (req, res) => {
   // console.log(req.body)
   if (req.body.username) {
-  loginID = [String(req.body.username)];
-  res.cookie('username', req.body.username /*, {httpOnly:true}*/);
-  const templateVars = {
-    username: req.body.username,
-    urls: urlDatabase
+    loginID = [String(req.body.username)];
+    res.cookie('username', req.body.username /*, {httpOnly:true}*/);
+    const templateVars = {
+      username: req.body.username,
+      urls: urlDatabase
     // ... any other vars
-  };
-  res.render("urls_index", templateVars);
+    };
+    res.render("urls_index", templateVars);
   } else {
     loginID = '';
     res.clearCookie('username');
@@ -53,30 +53,34 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: loginID[0]};
-  res.render("urls_index.ejs", templateVars);
+  if (loginID[0]) {    
+    const templateVars = { urls: urlDatabase, username: loginID[0]};
+    res.render("urls_index.ejs", templateVars);
+  }
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = {
-    username: loginID[0],
-    urls: urlDatabase
-    // ... any other vars
-  };
-  res.render("urls_new", templateVars);
+  if (loginID[0]) {    
+    const templateVars = {
+      username: loginID[0],
+      urls: urlDatabase
+      // ... any other vars
+    };
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.post("/urls", (req, res) => {
   let urlDBKeys = Object.keys(urlDatabase);
-  while(true) { // check to make sure there is no shortURL duplication
+  while (true) { // check to make sure there is no shortURL duplication
     let shortURL = generateRandomString();
     if (!urlDBKeys.includes(shortURL)) {
       urlDatabase[shortURL] = req.body.longURL;
-      res.redirect(`/urls/${shortURL}`)
+      res.redirect(`/urls/${shortURL}`);
       console.log(urlDatabase);
       break;
     }
-  }  
+  }
 });
 
 app.post('/urls/:shortURL/update', (req, res) => {
@@ -87,20 +91,20 @@ app.post('/urls/:shortURL/update', (req, res) => {
       delete urlDatabase[i];
     }
   }
-  while(true) { // check to make sure there is no shortURL duplication
+  while (true) { // check to make sure there is no shortURL duplication
     let shortURL = generateRandomString();
     if (!urlDBKeys.includes(shortURL)) {
       urlDatabase[shortURL] = longURL[0];
-      res.redirect(`/urls/${shortURL}`)
+      res.redirect(`/urls/${shortURL}`);
       console.log(urlDatabase);
       break;
     }
   }
 });
 
-app.post('/urls/:shortURL/delete', (req, res) => {  
+app.post('/urls/:shortURL/delete', (req, res) => {
   delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls")
+  res.redirect("/urls");
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -109,8 +113,10 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: loginID[0],};
-  res.render("urls_show", templateVars);
+  if (loginID[0]) {
+    const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: loginID[0],};
+    res.render("urls_show", templateVars);
+  }
 });
 
 app.get("/urls.json", (req, res) => {
