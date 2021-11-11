@@ -30,8 +30,10 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
-app.get("/login", (req, res) => {
-  res.send("Hello!");
+app.post("/login", (req, res) => {
+  console.log(req.body)
+  res.cookie('username', req.body.username /*, {httpOnly:true}*/);
+  res.redirect('/urls')
 });
 
 app.get("/urls", (req, res) => {
