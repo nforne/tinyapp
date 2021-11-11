@@ -31,7 +31,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-let loginID = '';
+let loginID = ''; // necessary ot grant prevelege to other site resources
 
 function generateRandomString(n) {
   const nums_letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -54,20 +54,28 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  console.log(req.body);
-  let templateVars = {};
-  while (true) { // check to make sure there is no userID duplication at auto generate
-    let randomID = generateRandomString(4);
-    if (!usersdbIDs.includes(randomID)) {      
-      let bodyjson = req.body;
-      bodyjson['id'] = randomID;
-      users[randomID] = bodyjson
-      templateVars = bodyjson;
-      break;
+  console.log(req.body.email.length);
+
+  if (req.body.email.length === 0 || req.body.password.length === 0) {
+    res.send("<html><body>404 \n<b>Email or password field empty. Not optional, must be filled</b></body></html>\n");
+    
+  } else {
+    while (true) { // check to make sure there is no userID duplication at auto generate
+      let randomID = generateRandomString(4);
+      if (!usersdbIDs.includes(randomID)) {      
+        let bodyjson = req.body;
+        bodyjson['id'] = randomID;
+        users[randomID] = bodyjson
+        loginID = [req.body.username];
+        console.log(users)
+        break;
+      }
     }
+    const templateVars = { urls: urlDatabase, username: loginID[0]};
+    res.cookie('username', req.body.username /*, {httpOnly:true}*/);
+    res.render('urls_index.ejs', templateVars);
   }
-  
-  res.render('urls_index.ejs', templateVars);
+
 
 });
 
@@ -78,8 +86,7 @@ app.post("/login", (req, res) => {
     for (let i of usersdbIDs) {
       if (users[i]['username'] === String(req.body.username)) {
 
-        loginID = [users[i]['username']];
-        
+        loginID = [users[i]['username']];        
 
         res.cookie('username', req.body.username /*, {httpOnly:true}*/);
         const templateVars = {
@@ -94,6 +101,9 @@ app.post("/login", (req, res) => {
     loginID = '';
     res.clearCookie('username');
     const templateVars = { urls: {}, username:''};
+    
+    // console.log(users);
+    
     res.render("urls_index", templateVars);
   }
 });
@@ -123,7 +133,7 @@ app.post("/urls", (req, res) => {
     if (!urlDBKeys.includes(shortURL)) {
       urlDatabase[shortURL] = req.body.longURL;
       res.redirect(`/urls/${shortURL}`);
-      console.log(urlDatabase);
+      // console.log(urlDatabase);
       break;
     }
   }
@@ -142,7 +152,7 @@ app.post('/urls/:shortURL/update', (req, res) => {
     if (!urlDBKeys.includes(shortURL)) {
       urlDatabase[shortURL] = longURL[0];
       res.redirect(`/urls/${shortURL}`);
-      console.log(urlDatabase);
+      // console.log(urlDatabase);
       break;
     }
   }
