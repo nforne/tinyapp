@@ -9,7 +9,11 @@ const cookieParser = require('cookie-parser');
 
 app.set("view engine", "ejs");
 
-// const urlDatabase = require('./db')
+const users = [
+  {username: 'nforne', email: 'ab@ab.com', password: 'xyz123'},
+  {username: 'Martin', email: 'cd@cd.com', password: 'abc123'}
+]
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
