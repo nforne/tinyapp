@@ -9,12 +9,12 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a> 
         <a class="nav-item nav-link" class="btn btn-primary" href="/register">Register</a>     
-     <%if (username) {%>
+     <%if (email) {%>
       </div>
       <div style='float: right; margin-left: auto;'>
         <form class="form-inline" action="/login" method="POST" >
           <div class="form-group mb-2">
-            <label for="username" style="margin-right: 10em;">Logged in as: <%=username%></label>
+            <label for="username" style="margin-right: 10em;">Logged in as: <%=email%></label>
             <input class="form-control" type="text" name="username" placeholder="username" style="width: 300px; margin: 1em; display: none;">
             <a href="/login"><button type="submit" class="btn btn-primary">logout</button></a>
           </div>
@@ -25,7 +25,7 @@
       <div style='float: right; margin-left: auto;'>
         <form class="form-inline" action="/login" method="GET" >
           <div class="form-group mb-2">
-            <label for="username" style="display: none;">username</label>
+            <label for="username" style="display: none;">email</label>
             <input class="form-control" type="text" name="username" placeholder="username" style="width: 300px; margin: 1em; display: none;">
             <a href="/login"><button type="submit" class="btn btn-primary">login</button></a>
           </div>
