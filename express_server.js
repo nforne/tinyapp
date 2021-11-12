@@ -219,57 +219,73 @@ app.get("/urls/new", (req, res) => {
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 app.post("/urls", (req, res) => {
-  
-  const urlDBKeys = Object.keys(urlDatabase);
-  while (true) {      // to make sure there is no shortURL duplication
-    let shortURL = generateRandomString(6);
-    if (!urlDBKeys.includes(shortURL)) {
-      urlDatabase[shortURL] = {'longURL': req.body.longURL, 'userID': userID()};
-      // console.log(urlDatabase);
+  if (loginID[0]) {
 
-      res.redirect(`/urls/${shortURL}`);
-      break;
+    const urlDBKeys = Object.keys(urlDatabase);
+    while (true) {      // to make sure there is no shortURL duplication
+      let shortURL = generateRandomString(6);
+      if (!urlDBKeys.includes(shortURL)) {
+        urlDatabase[shortURL] = {'longURL': req.body.longURL, 'userID': userID()};
+        // console.log(urlDatabase);
+  
+        res.redirect(`/urls/${shortURL}`);
+        break;
+      }
     }
+  } else {
+    res.render("urls_login",);
   }
 });
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 app.post('/urls/:shortURL/update', (req, res) => { 
+  if (loginID[0]) {
 
-  const urlDBKeys = Object.keys(urlDatabase);
-  let longURL = [flatUrlDB()[req.params.shortURL]];  
-  for (let i of urlDBKeys) {
-    if (urlDatabase[i]['longURL'] === longURL[0]) {
-      delete urlDatabase[i];
+    const urlDBKeys = Object.keys(urlDatabase);
+    let longURL = [flatUrlDB()[req.params.shortURL]];  
+    for (let i of urlDBKeys) {
+      if (urlDatabase[i]['longURL'] === longURL[0]) {
+        delete urlDatabase[i];
+      }
     }
-  }
-  
-  while (true) { // check to make sure there is no shortURL duplication
-    let shortURL = generateRandomString(6);
     
-    if (!urlDBKeys.includes(shortURL)) {    
+    while (true) { // check to make sure there is no shortURL duplication
+      let shortURL = generateRandomString(6);
       
-      urlDatabase[shortURL] = {'longURL':longURL[0],'userID': userID()};      
-     
-      res.redirect(`/urls/${shortURL}`);
-      break;
+      if (!urlDBKeys.includes(shortURL)) {    
+        
+        urlDatabase[shortURL] = {'longURL':longURL[0],'userID': userID()};      
+       
+        res.redirect(`/urls/${shortURL}`);
+        break;
+      }
     }
+  } else {
+    res.render("urls_login",);
   }
 });
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
+  if (loginID[0]) {
+    delete urlDatabase[req.params.shortURL];
+    res.redirect("/urls");
+  } else {
+    res.render("urls_login",);
+  }
 });
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL]['longURL'];
-  res.redirect(longURL);
+  if (loginID[0]) {    
+    const longURL = urlDatabase[req.params.shortURL]['longURL'];
+    res.redirect(longURL);
+  } else {
+    res.render("urls_login",);
+  }
 });
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -286,14 +302,18 @@ app.get("/urls/:shortURL", (req, res) => {
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
+  if (loginID[0]) {    
+    res.json(urlDatabase);
+  } else {
+    res.render("urls_login",);
+  }
 });
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
+// app.get("/hello", (req, res) => {
+//   res.send("<html><body>Hello <b>World</b></body></html>\n");
+// });
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
