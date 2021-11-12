@@ -157,6 +157,8 @@ app.get("/urls", (req, res) => {
   if (loginID[0]) {    
     const templateVars = { urls: urlDatabase, username: loginID[0]};
     res.render("urls_index.ejs", templateVars);
+  } else {
+    res.render("urls_login",);
   }
 });
 
@@ -170,6 +172,8 @@ app.get("/urls/new", (req, res) => {
       // ... any other vars
     };
     res.render("urls_new", templateVars);
+  }else {
+    res.render("urls_login",);
   }
 });
 
@@ -229,6 +233,8 @@ app.get("/urls/:shortURL", (req, res) => {
   if (loginID[0]) {
     const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: loginID[0],};
     res.render("urls_show", templateVars);
+  } else {
+    res.render("urls_login",);
   }
 });
 
