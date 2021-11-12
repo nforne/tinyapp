@@ -82,7 +82,6 @@ const userID = () => {
   }
   return userID;
 }
-console.log(userID());
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -215,6 +214,12 @@ app.get("/urls/new", (req, res) => {
     res.render("urls_login",);
   }
 });
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+app.get ('/public', (req, res) => {
+  const templateVars = { urls: flatUrlDB()};
+    res.render("urls_indexPublic", templateVars);
+}) 
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
