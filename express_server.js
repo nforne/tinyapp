@@ -106,7 +106,7 @@ const querry_DB_By_ID = () => {
   }
   return flatUrlDB(outPut);
 }
-
+const urlsForUser = querry_DB_By_ID();
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 function generateRandomString(n) {
