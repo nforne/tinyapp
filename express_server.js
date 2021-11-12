@@ -33,16 +33,34 @@ const users = {
   }
 }
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
 const usersdbIDs = Object.keys(users);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+// const urlDatabase = {
+//   "b2xVn2": "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com"
+// };
+
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+      longURL: "https://www.tsn.ca",
+      userID: "aJ48lW"
+  },
+  i3BoGr: {
+      longURL: "https://www.google.ca",
+      userID: "aJ48lW"
+  }
 };
+
+const urlDBKeys = Object.keys(urlDatabase);
+
+//-------------------------------- 
+let flatUrlDB = {};
+for (let i of urlDBKeys) {
+  outPut[i] = urlDatabase[i]['longURL'];
+}
+//-------------------------------
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -104,12 +122,12 @@ app.post("/register", (req, res) => {
         let bodyjson = req.body;
         bodyjson['id'] = randomID;
         users[randomID] = bodyjson
-        loginID = [req.body.username];
+        loginID = [req.body.email];
         console.log(users)
         break;
       }
     }
-    const templateVars = { urls: urlDatabase, username: loginID[0]};
+    const templateVars = { urls: flatUrlDB, username: loginID[0]};
     res.cookie('username', req.body.username /*, {httpOnly:true}*/);
     res.render('urls_index.ejs', templateVars);
   }
@@ -125,12 +143,12 @@ app.post("/login", (req, res) => {
     for (let i of usersdbIDs) {
       if (users[i]['email'] === String(req.body.email) && users[i]['password'] === String(req.body.password)) {
 
-        loginID = [users[i]['username']];        
+        loginID = [users[i]['email']];        
 
         res.cookie('user_id', users[i]['id'] /*, {httpOnly:true}*/);
         const templateVars = {
           username: req.body.username,
-          urls: urlDatabase
+          urls: flatUrlDB // urlDatabase
         // ... any other vars
         };
         res.render("urls_index", templateVars);
@@ -155,7 +173,7 @@ app.get("/login", (req, res) => {
 
 app.get("/urls", (req, res) => {
   if (loginID[0]) {    
-    const templateVars = { urls: urlDatabase, username: loginID[0]};
+    const templateVars = { urls: flatUrlDB, username: loginID[0]};
     res.render("urls_index.ejs", templateVars);
   } else {
     res.render("urls_login",);
@@ -168,7 +186,7 @@ app.get("/urls/new", (req, res) => {
   if (loginID[0]) {    
     const templateVars = {
       username: loginID[0],
-      urls: urlDatabase
+      urls: flatUrlDB
       // ... any other vars
     };
     res.render("urls_new", templateVars);
@@ -183,10 +201,18 @@ app.post("/urls", (req, res) => {
   let urlDBKeys = Object.keys(urlDatabase);
   while (true) { // check to make sure there is no shortURL duplication
     let shortURL = generateRandomString(6);
+    //--------------------------------------
+    let userID = '',
+    for (let i of usersdbIDs) {
+      if (users[i]['email'] === loginID[0]) {
+        userID = i;
+      }
+    }
+    //-------------------------------------
     if (!urlDBKeys.includes(shortURL)) {
-      urlDatabase[shortURL] = req.body.longURL;
+      urlDatabase[shortURL] = {'longURL' : req.body.longURL, 'userID' : userID };
       res.redirect(`/urls/${shortURL}`);
-      // console.log(urlDatabase);
+      console.log(urlDatabase);
       break;
     }
   }
