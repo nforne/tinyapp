@@ -12,7 +12,7 @@ app.set("view engine", "ejs");
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-const users = { 
+let users = { 
   "user1RandomID": {
     id: "userRandomID",
     username : 'username1', 
@@ -39,7 +39,7 @@ const usersdbIDs = Object.keys(users);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-const urlDatabase = {
+let urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
@@ -104,13 +104,13 @@ app.post("/register", (req, res) => {
         let bodyjson = req.body;
         bodyjson['id'] = randomID;
         users[randomID] = bodyjson
-        loginID = [req.body.username];
+        loginID = [req.body.email];
         console.log(users)
         break;
       }
     }
     const templateVars = { urls: urlDatabase, username: loginID[0]};
-    res.cookie('username', req.body.username /*, {httpOnly:true}*/);
+    res.cookie('user_id', req.body.id /*, {httpOnly:true}*/);
     res.render('urls_index.ejs', templateVars);
   }
 });
