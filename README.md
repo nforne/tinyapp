@@ -3,7 +3,7 @@
 
 ### How to run it!
 * npm i /*dependency*/
-** /*Its a Node.js and Express.js App. So you'll need to install those to run it plus the following: [check package.json to confirm]*/
+* /*Its a Node.js and Express.js App. So you'll need to install those to run it plus the following: [check package.json to confirm]*/
 - bcrypt
 - body-parser
 - cookie-session
