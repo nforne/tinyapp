@@ -77,62 +77,15 @@ const sampleUrlDB = {
 
 // const urlDBKeys = Object.keys(urlDatabase);
 
-//--------------------------------------
-const flatUrlDB = (DB) => {
-  const urlDBKeys = Object.keys(DB);
-  let outPut = {};
-  for (let i of urlDBKeys) {
-    outPut[i] = DB[i]['longURL'];
-  }
-  return outPut;
-}
-
-
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 let loginID = ''; // for granting access to other site resources
 
-//--------------------------------------
-
-const userID = () => {
-  const usersdbIDs = Object.keys(users);
-  let userID = '';
-  for (let i of usersdbIDs) {
-    if (users[i]['email'] === loginID[0]) {
-      userID = i;
-    }
-  }
-  return userID;
-}
-//--------------------------------------
-
-const querry_DB_By_ID = () => {
-  let outPut = {} 
-  const UID = userID();
-  const urlDBKeys = Object.keys(urlDatabase);
-  for (let i of urlDBKeys) {
-    if (urlDatabase[i]['userID'] === UID) {
-      outPut[i] = urlDatabase[i];
-    }
-  }
-  return flatUrlDB(outPut);
-}
-
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function generateRandomString(n) {
-  const nums_letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  const alphanumeric = nums_letters.split('');
-  let key = "";
-  for (let i = 0; i < n; i++) {
-    const index = Math.floor(Math.random() * 62);
-    key += alphanumeric[index];
-  }
-  return key;
-}
+const {flatUrlDB, generateRandomString} = require('./helperFunctions');
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+//--------------------------------------
 const emailCheck = (email) => {
   const usersdbIDs = Object.keys(users);
   let outPut = false;
@@ -142,7 +95,33 @@ const emailCheck = (email) => {
     } 
   }
   return outPut;
-}
+};
+
+//--------------------------------------
+
+const userID = () => { // to retrieve the user id using the loging email id
+  const usersdbIDs = Object.keys(users);
+  let userID = '';
+  for (let i of usersdbIDs) {
+    if (users[i]['email'] === loginID[0]) {
+      userID = i;
+    }
+  }
+  return userID;
+};
+//--------------------------------------
+
+const querry_DB_By_ID = () => { // to retrieve only data of a particular user id
+  let outPut = {} 
+  const UID = userID();
+  const urlDBKeys = Object.keys(urlDatabase);
+  for (let i of urlDBKeys) {
+    if (urlDatabase[i]['userID'] === UID) {
+      outPut[i] = urlDatabase[i];
+    }
+  }
+  return flatUrlDB(outPut);
+};
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
