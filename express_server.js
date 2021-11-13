@@ -4,7 +4,18 @@ const PORT = 8080; // default port 8080
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-const cookieParser = require('cookie-parser');
+
+// const cookieParser = require('cookie-parser');
+// app.use(cookieParser())
+
+const bcrypt = require('bcryptjs');
+const cookieSession = require('cookie-session')
+app.use(cookieSession({
+  name: 'session',
+  keys: [0/* secret keys */],
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -66,24 +77,29 @@ const sampleUrlDB = {
 
 // const urlDBKeys = Object.keys(urlDatabase);
 
-//--------------------------------------
-const flatUrlDB = (DB) => {
-  const urlDBKeys = Object.keys(DB);
-  let outPut = {};
-  for (let i of urlDBKeys) {
-    outPut[i] = DB[i]['longURL'];
-  }
-  return outPut;
-}
-
-
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 let loginID = ''; // for granting access to other site resources
 
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+const {flatUrlDB, generateRandomString} = require('./helpers');
+
+//--------------------------------------
+const emailCheck = (email) => {
+  const usersdbIDs = Object.keys(users);
+  let outPut = false;
+  for (let i of usersdbIDs) {
+    if (users[i]['email'] === email) {
+      outPut = true;
+    } 
+  }
+  return outPut;
+};
+
 //--------------------------------------
 
-const userID = () => {
+const userID = () => { // to retrieve the user id using the loging email id
   const usersdbIDs = Object.keys(users);
   let userID = '';
   for (let i of usersdbIDs) {
@@ -92,10 +108,10 @@ const userID = () => {
     }
   }
   return userID;
-}
+};
 //--------------------------------------
 
-const querry_DB_By_ID = () => {
+const querry_DB_By_ID = () => { // to retrieve only data of a particular user id
   let outPut = {} 
   const UID = userID();
   const urlDBKeys = Object.keys(urlDatabase);
@@ -105,6 +121,7 @@ const querry_DB_By_ID = () => {
     }
   }
   return flatUrlDB(outPut);
+<<<<<<< HEAD
 }
 const urlsForUser = querry_DB_By_ID();
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -132,6 +149,9 @@ const emailCheck = (email) => {
   }
   return outPut;
 }
+=======
+};
+>>>>>>> encryption/bcryptjs
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -161,18 +181,21 @@ app.post("/register", (req, res) => {
     const usersdbIDs = Object.keys(users);
     while (true) { // check to make sure there is no userID duplication at auto generate
       let randomID = generateRandomString(4);
-      if (!usersdbIDs.includes(randomID)) {      
+      if (!usersdbIDs.includes(randomID)) {  
+      
         cookieValue = randomID;
         let bodyjson = req.body;
         bodyjson['id'] = randomID;
+        bodyjson['password'] = bcrypt.hashSync(req.body.password, 10);
         users[randomID] = bodyjson
         loginID = [req.body.email];
-        // console.log(users)
+        // console.log(users) 
         break;
       }
     }
     const templateVars = { urls: querry_DB_By_ID(), email: loginID[0]};
-    res.cookie('user_id', cookieValue /*, {httpOnly:true}*/);
+    // res.cookie('user_id', cookieValue /*, {httpOnly:true}*/);
+    req.session.user_id = cookieValue;
     res.render('urls_index', templateVars);
   }
 });
@@ -183,16 +206,17 @@ app.post("/login", (req, res) => {
 
   if (req.body.email && req.body.password) {
     const usersdbIDs = Object.keys(users);
-    for (let i of usersdbIDs) {
-      if (users[i]['email'] === String(req.body.email) && users[i]['password'] === String(req.body.password)) {
+    for (let i of usersdbIDs) {  
+      console.log(bcrypt.compareSync(req.body.password, users[i]['password']))
+      if (users[i]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[i]['password'])) {
 
         loginID = [users[i]['email']];        
 
-        res.cookie('user_id', users[i]['id'] /*, {httpOnly:true}*/);        
-        
+        // res.cookie('user_id', users[i]['id'] /*, {httpOnly:true}*/);        
+        req.session.user_id = users[i]['id'];
         const templateVars = {
           email: req.body.email,
-          urls: querry_DB_By_ID() // urlDatabase
+          urls: querry_DB_By_ID()
         // ... any other vars
         };
         res.render("urls_index", templateVars);
@@ -200,8 +224,10 @@ app.post("/login", (req, res) => {
      }
   } else {
     loginID = '';
-    res.clearCookie('user_id')
+    req.session.user_id = null;
     res.render("urls_login",);
+    
+    // res.clearCookie('user_id')
     // res.redirect('/login')
     // res.render('urls_alert'); 
   }
@@ -215,7 +241,7 @@ app.get("/login", (req, res) => {
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-app.get("/urls", (req, res) => {  //-------------------------------------------------------------------
+app.get("/urls", (req, res) => {  
   if (loginID[0]) {
 
     const templateVars = { urls: querry_DB_By_ID(), email: loginID[0]};

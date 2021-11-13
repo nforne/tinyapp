@@ -6,10 +6,19 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New URL</a> 
+        <%if (typeof urls !== undefined) {%> 
+            <a class="nav-item nav-link" href="/urls">My URLs</a>
+            <a class="nav-item nav-link" href="/urls">My URLs</a>
+            <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+            
+          <% } else {%> 
+            <a class="nav-item nav-link" href="/urls">My URLs</a>
+            <a class="nav-item nav-link" href="/urls">My URLs</a>
+            <a class="nav-item nav-link" href="/urls/new">Create New URL</a> 
+          <%}%>
       </div>
       <div class="form-inline" style="margin-left: auto;">
+        <h6 class="form-inline" class="nav-item nav-link" style="margin-bottom: 0%; margin-right: auto;color:blanchedalmond;">^^^00--<p5 style="color: black;">S2Q</p5>--00^^^</h6>
         <a class="nav-item nav-link" href="/register"><button class="btn btn-primary">Register</button></a> 
         <a href="/login"><button type="submit" class="btn btn-primary" style="margin-right: auto;">login</button></a>
       </div>
