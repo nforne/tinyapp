@@ -25,5 +25,5 @@
 
 ## Final Product
 
-![Screenshot1](img1.png)
-![Screenshot1](img2.png)
+![Screenshot1](/docs/img1.png)
+![Screenshot1](/docs/img2.png)
