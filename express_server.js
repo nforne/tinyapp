@@ -83,7 +83,7 @@ let loginID = ''; // for granting access to other site resources
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-const {flatUrlDB, generateRandomString} = require('./helperFunctions');
+const {flatUrlDB, generateRandomString} = require('./helpers');
 
 //--------------------------------------
 const emailCheck = (email) => {
