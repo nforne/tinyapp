@@ -49,18 +49,20 @@ const users = {
 const urlDatabase = {
   b6UTxQ: {
       longURL: "https://www.tsn.ca",
-      userID: "aJ48lW"
+      userID: "aJ48lW",
+      urlUseCount:0
   },
   i3BoGr: {
       longURL: "https://www.google.ca",
-      userID: "aJ48lW"
+      userID: "aJ48lW",
+      urlUseCount:0
   }
 };
 
 const sampleUrlDB = { // for demo on the front page Tinyapp
   b6UTxQ: {
       longURL: "https://www.tsn.ca",
-      userID: "aJ48lW"
+      userID: "aJ48lW",
   },
   i3BoGr: {
       longURL: "https://www.google.ca",
@@ -244,7 +246,7 @@ app.post("/urls", (req, res) => {
     while (true) {      // to make sure there is no shortURL duplication
       let shortURL = generateRandomString(6);
       if (!urlDBKeys.includes(shortURL)) {
-        urlDatabase[shortURL] = {'longURL': req.body.longURL, 'userID': userID()};
+        urlDatabase[shortURL] = {'longURL': req.body.longURL, 'userID': userID(), 'urlUseCount':0};
         // console.log(urlDatabase);
   
         res.redirect(`/urls/${shortURL}`);
@@ -276,7 +278,7 @@ app.put('/urls/:shortURL/update', (req, res) => {
       
       if (!urlDBKeys.includes(shortURL)) {    
         
-        urlDatabase[shortURL] = {'longURL':longURL[0],'userID': userID()};      
+        urlDatabase[shortURL] = {'longURL':longURL[0],'userID': userID(), 'urlUseCount':0};      
        
         res.redirect(`/urls/${shortURL}`);
         break;
@@ -286,6 +288,16 @@ app.put('/urls/:shortURL/update', (req, res) => {
     res.render("urls_login",);
   }
 });
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+app.post('/urlUseCount', (req, res) => {
+  if (loginID[0] && req.body.shortURL) { //-------------------------to track url use for analytics-------------------------------
+    urlDatabase[req.body.shortURL]['urlUseCount'] += 1;
+  } else {
+    res.render("urls_login",);
+  }
+})
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
