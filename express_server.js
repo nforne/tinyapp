@@ -5,15 +5,12 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-// const cookieParser = require('cookie-parser');
-// app.use(cookieParser())
-
 const bcrypt = require('bcryptjs');
 const cookieSession = require('cookie-session')
 app.use(cookieSession({
   name: 'session',
   keys: [0/* secret keys */],
-  // Cookie Options
+  
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 
@@ -44,14 +41,7 @@ const users = {
   }
 }
 
-// const usersdbIDs = Object.keys(users);
-
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-// const urlDatabase = {
-//   "b2xVn2": "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com"
-// };
 
 const urlDatabase = {
   b6UTxQ: {
@@ -64,7 +54,7 @@ const urlDatabase = {
   }
 };
 
-const sampleUrlDB = {
+const sampleUrlDB = { // for demo on the front page Tinyapp
   b6UTxQ: {
       longURL: "https://www.tsn.ca",
       userID: "aJ48lW"
@@ -74,8 +64,6 @@ const sampleUrlDB = {
       userID: "aJ48lW"
   }
 };
-
-// const urlDBKeys = Object.keys(urlDatabase);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -121,42 +109,18 @@ const querry_DB_By_ID = () => { // to retrieve only data of a particular user id
     }
   }
   return flatUrlDB(outPut);
-<<<<<<< HEAD
-}
-const urlsForUser = querry_DB_By_ID();
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-function generateRandomString(n) {
-  const nums_letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  const alphanumeric = nums_letters.split('');
-  let key = "";
-  for (let i = 0; i < n; i++) {
-    const index = Math.floor(Math.random() * 62);
-    key += alphanumeric[index];
-  }
-  return key;
-}
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-const emailCheck = (email) => {
-  const usersdbIDs = Object.keys(users);
-  let outPut = false;
-  for (let i of usersdbIDs) {
-    if (users[i]['email'] === email) {
-      outPut = true;
-    } 
-  }
-  return outPut;
-}
-=======
 };
->>>>>>> encryption/bcryptjs
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  const urlDBKeys = Object.keys(sampleUrlDB);
+  let outPut = {};
+  for (let i of urlDBKeys) {
+    outPut[i] = sampleUrlDB[i]['longURL'];
+  }
+  const templateVars = { urls: outPut};
+  res.render("urls_indexPublic", templateVars);
 });
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -179,22 +143,20 @@ app.post("/register", (req, res) => {
   } else {
     let cookieValue = '';
     const usersdbIDs = Object.keys(users);
+
     while (true) { // check to make sure there is no userID duplication at auto generate
       let randomID = generateRandomString(4);
-      if (!usersdbIDs.includes(randomID)) {  
-      
-        cookieValue = randomID;
+      if (!usersdbIDs.includes(randomID)) {       
         let bodyjson = req.body;
         bodyjson['id'] = randomID;
         bodyjson['password'] = bcrypt.hashSync(req.body.password, 10);
         users[randomID] = bodyjson
+        cookieValue = randomID;
         loginID = [req.body.email];
-        // console.log(users) 
         break;
       }
     }
     const templateVars = { urls: querry_DB_By_ID(), email: loginID[0]};
-    // res.cookie('user_id', cookieValue /*, {httpOnly:true}*/);
     req.session.user_id = cookieValue;
     res.render('urls_index', templateVars);
   }
@@ -210,14 +172,12 @@ app.post("/login", (req, res) => {
       console.log(bcrypt.compareSync(req.body.password, users[i]['password']))
       if (users[i]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[i]['password'])) {
 
-        loginID = [users[i]['email']];        
+        loginID = [users[i]['email']];
 
-        // res.cookie('user_id', users[i]['id'] /*, {httpOnly:true}*/);        
         req.session.user_id = users[i]['id'];
         const templateVars = {
           email: req.body.email,
-          urls: querry_DB_By_ID()
-        // ... any other vars
+          urls: querry_DB_By_ID()        
         };
         res.render("urls_index", templateVars);
       }
@@ -226,10 +186,6 @@ app.post("/login", (req, res) => {
     loginID = '';
     req.session.user_id = null;
     res.render("urls_login",);
-    
-    // res.clearCookie('user_id')
-    // res.redirect('/login')
-    // res.render('urls_alert'); 
   }
 });
 
@@ -257,8 +213,7 @@ app.get("/urls/new", (req, res) => {
   if (loginID[0]) {    
     const templateVars = {
       email: loginID[0],
-      urls: flatUrlDB(urlDatabase),
-      // ... any other vars
+      urls: flatUrlDB(urlDatabase)
     };
     res.render("urls_new", templateVars);
   } else {
@@ -371,12 +326,6 @@ app.get("/urls.json", (req, res) => {
     res.render("urls_login",);
   }
 });
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-// app.get("/hello", (req, res) => {
-//   res.send("<html><body>Hello <b>World</b></body></html>\n");
-// });
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
