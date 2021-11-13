@@ -1,9 +1,19 @@
-#### TinyApp
-## A simple secure web application to grant registered users private space to keep a collection of their urls in shortened form.
+#### TinyApp Project
+## A simple secure web application to grant registered users private space to keep a collection of their urls in shortened form. Its a full stack web application built with Node and Express. 
+* Shorten long URLs (à la bit.ly)
 
 ### How to run it!
-* npm i /*dependency*/
-* /*Its a Node.js and Express.js App. So you'll need to install those to run it plus the following: [check package.json to confirm]*/
+
+## Getting Started
+
+- Install all dependencies (using the `npm install` command).
+- Run the development web server using the `node express_server.js` command.
+
+* npm i /*dependency name*/
+* /*Its a Node.js and Express.js. So you'll need to install node to run it plus the following: [check package.json to confirm]*/
+
+## Dependencies
+
 - -bcrypt
 - -body-parser
 - -cookie-session
@@ -13,8 +23,5 @@
 
 ## /*Open to improvements and further addaptions*/
 
-![Screenshot1](img1.png)
-![Screenshot2](img2.png)
-![Screenshot3](img3.png)
-![Screenshot4](img4.png)
-![Screenshot5](img5.png)
+
+
