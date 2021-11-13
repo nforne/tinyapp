@@ -4,7 +4,11 @@ const PORT = 8080; // default port 8080
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+
 const cookieParser = require('cookie-parser');
+app.use(cookieParser())
+
+const bcrypt = require('bcryptjs');
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -161,13 +165,15 @@ app.post("/register", (req, res) => {
     const usersdbIDs = Object.keys(users);
     while (true) { // check to make sure there is no userID duplication at auto generate
       let randomID = generateRandomString(4);
-      if (!usersdbIDs.includes(randomID)) {      
+      if (!usersdbIDs.includes(randomID)) {  
+      
         cookieValue = randomID;
         let bodyjson = req.body;
         bodyjson['id'] = randomID;
+        bodyjson['password'] = bcrypt.hashSync(req.body.password, 10);
         users[randomID] = bodyjson
         loginID = [req.body.email];
-        // console.log(users)
+        // console.log(users) 
         break;
       }
     }
@@ -183,8 +189,9 @@ app.post("/login", (req, res) => {
 
   if (req.body.email && req.body.password) {
     const usersdbIDs = Object.keys(users);
-    for (let i of usersdbIDs) {
-      if (users[i]['email'] === String(req.body.email) && users[i]['password'] === String(req.body.password)) {
+    for (let i of usersdbIDs) {  //-----------------------------------------------------------------------
+      console.log(bcrypt.compareSync(req.body.password, users[i]['password']))
+      if (users[i]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[i]['password'])) {
 
         loginID = [users[i]['email']];        
 
@@ -215,7 +222,7 @@ app.get("/login", (req, res) => {
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-app.get("/urls", (req, res) => {  //-------------------------------------------------------------------
+app.get("/urls", (req, res) => {  
   if (loginID[0]) {
 
     const templateVars = { urls: querry_DB_By_ID(), email: loginID[0]};
