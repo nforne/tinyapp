@@ -14,6 +14,9 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 
+const methodOverride = require('method-override')
+app.use(methodOverride('_method'))  // override with POST having ?_method=DELETE
+
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 app.set("view engine", "ejs");
@@ -257,7 +260,7 @@ app.post("/urls", (req, res) => {
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-app.post('/urls/:shortURL/update', (req, res) => { 
+app.put('/urls/:shortURL/update', (req, res) => { 
   if (loginID[0]) {
 
     const urlDBKeys = Object.keys(urlDatabase);
@@ -286,7 +289,7 @@ app.post('/urls/:shortURL/update', (req, res) => {
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.delete('/urls/:shortURL/delete', (req, res) => {
   if (loginID[0]) {
     delete urlDatabase[req.params.shortURL];
     res.redirect("/urls");

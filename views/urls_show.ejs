@@ -25,7 +25,7 @@
 
      
 
-        <form class="card-body" method="POST" action='/urls/<%= shortURL %>/update'>
+        <form class="card-body" method="POST" action='/urls/<%= shortURL %>/update?_method=PUT'>
           <button type="submit" value='<%= longURL %>' class="btn btn-primary" >Submit</button>
           <label for="Update"><% 'shortURL' %></label> 
         </form>     

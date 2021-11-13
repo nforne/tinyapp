@@ -31,7 +31,7 @@
               <a href= http://localhost:8080/urls/<%= url %> ><button class="btn btn-primary">EDIT</button></a>
             </td>
             <td>
-              <form method="POST" action='/urls/<%=url%>/delete'>                                
+              <form method="POST" action='/urls/<%=url%>/delete?_method=DELETE'>                                
                 <button type="submit" value='<%url%>' class="btn btn-primary" style="font-size:small; color: red; background-color: white; border-color: red;">Remove</button>
                 <label for="shortURL"><% 'shortURL' %></label> 
               </form>
