@@ -5,10 +5,17 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-const cookieParser = require('cookie-parser');
-app.use(cookieParser())
+// const cookieParser = require('cookie-parser');
+// app.use(cookieParser())
 
 const bcrypt = require('bcryptjs');
+const cookieSession = require('cookie-session')
+app.use(cookieSession({
+  name: 'session',
+  keys: [0/* secret keys */],
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -178,7 +185,8 @@ app.post("/register", (req, res) => {
       }
     }
     const templateVars = { urls: querry_DB_By_ID(), email: loginID[0]};
-    res.cookie('user_id', cookieValue /*, {httpOnly:true}*/);
+    // res.cookie('user_id', cookieValue /*, {httpOnly:true}*/);
+    req.session.user_id = cookieValue;
     res.render('urls_index', templateVars);
   }
 });
@@ -189,17 +197,17 @@ app.post("/login", (req, res) => {
 
   if (req.body.email && req.body.password) {
     const usersdbIDs = Object.keys(users);
-    for (let i of usersdbIDs) {  //-----------------------------------------------------------------------
+    for (let i of usersdbIDs) {  
       console.log(bcrypt.compareSync(req.body.password, users[i]['password']))
       if (users[i]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[i]['password'])) {
 
         loginID = [users[i]['email']];        
 
-        res.cookie('user_id', users[i]['id'] /*, {httpOnly:true}*/);        
-        
+        // res.cookie('user_id', users[i]['id'] /*, {httpOnly:true}*/);        
+        req.session.user_id = users[i]['id'];
         const templateVars = {
           email: req.body.email,
-          urls: querry_DB_By_ID() // urlDatabase
+          urls: querry_DB_By_ID()
         // ... any other vars
         };
         res.render("urls_index", templateVars);
@@ -207,8 +215,10 @@ app.post("/login", (req, res) => {
      }
   } else {
     loginID = '';
-    res.clearCookie('user_id')
+    req.session.user_id = null;
     res.render("urls_login",);
+    
+    // res.clearCookie('user_id')
     // res.redirect('/login')
     // res.render('urls_alert'); 
   }
