@@ -99,17 +99,6 @@ const emailCheck = (email) => {
 
 //--------------------------------------
 
-// const userID = () => { // to retrieve the user id using the loging email id
-//   const usersdbIDs = Object.keys(users);
-//   let UID = '';
-//   for (let i of usersdbIDs) {
-//     if (users[i]['email'] === loginID[0]) {
-//       UID = i;
-//     }
-//   }
-//   return UID;
-// };
-
 const fetchEmailById = (id) => {
   const usersdbIDs = Object.keys(users);
   for (let i of usersdbIDs) {
@@ -201,10 +190,12 @@ app.post("/login", (req, res) => {
         res.render("urls_index", templateVars);
       }
      }
+  } else if (signInCheck(req)) {
+      loginID.splice(loginID.indexOf(req.session.user_id), 1);
+      req.session = null;
+      res.render("urls_login");
   } else {
-    loginID = '';
-    req.session.user_id = null;
-    res.render("urls_login",);
+    res.render("urls_login");
   }
 });
 
@@ -340,7 +331,7 @@ app.get("/urls/:shortURL", (req, res) => {
     const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]['longURL'], email: fetchEmailById(req.session.user_id)};
     res.render("urls_show", templateVars);
   } else {
-    res.render("urls_login",);
+    res.render("urls_login");
   } 
 });
 
@@ -350,7 +341,7 @@ app.get("/urls.json", (req, res) => {
   if (signInCheck(req)) {    
     res.json(urlDatabase);
   } else {
-    res.render("urls_login",);
+    res.render("urls_login");
   }
 });
 
