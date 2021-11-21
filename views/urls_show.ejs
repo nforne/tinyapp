@@ -15,7 +15,7 @@
         <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
       </div>
 
-        <h3 class="card-body">Edit</h3>
+        <h3 class="card-body"><a href="/urls"><button class="btn btn-primary">SUBMIT&#128516;</button></a></h3>
         <form class="form-inline" class="card text-center" method="POST" action='/urls/:shortURL/update' > 
           <div class="form-group mb-2" style="margin-left: 28em;">           
             <label for="shortURL">Enter URL:</label>
@@ -26,7 +26,7 @@
      
 
         <form class="card-body" method="POST" action='/urls/<%= shortURL %>/update?_method=PUT'>
-          <button type="submit" value='<%= longURL %>' class="btn btn-primary" >Submit</button>
+          </a><button type="submit" value='<%= longURL %>' class="btn btn-primary" >EDIT</button>
           <label for="Update"><% 'shortURL' %></label> 
         </form>     
          
