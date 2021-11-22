@@ -14,21 +14,20 @@
         <h5 class="card-title">TinyURL for: <%= longURL %></h5>
         <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
       </div>
+      
+      <form class="card-body" method="POST" action='/urls/<%= shortURL %>/update?_method=PUT'>
+        </a><button type="submit" value='<%= longURL %>' class="btn btn-primary" >Update</button>
+        <label for="Update"><% 'shortURL' %></label> 
+      </form>  
 
-        <h3 class="card-body"><a href="/urls"><button class="btn btn-primary">SUBMIT&#128516;</button></a></h3>
-        <form class="form-inline" class="card text-center" method="POST" action='/urls/:shortURL/update' > 
-          <div class="form-group mb-2" style="margin-left: 28em;">           
-            <label for="shortURL">Enter URL:</label>
-            <input class="form-control" type="text" name="longURL" placeholder="http://www.google.com" style="width: 300px; margin: 1em">            
-          </div>
-        </form>
-
-     
-
-        <form class="card-body" method="POST" action='/urls/<%= shortURL %>/update?_method=PUT'>
-          </a><button type="submit" value='<%= longURL %>' class="btn btn-primary" >EDIT</button>
-          <label for="Update"><% 'shortURL' %></label> 
-        </form>     
+      <form class="form-inline" class="card text-center" method="POST" action='/urls/:shortURL/update' > 
+        <div class="form-group mb-2" style="margin-left: 28em;">           
+          <label for="shortURL">Enter URL:</label>
+          <input class="form-control" type="text" name="longURL" placeholder="http://www.google.com" style="width: 300px; margin: 1em">            
+        </div>
+      </form>      
+      
+    <h3 class="card-body"><a href="/urls"><button class="btn btn-primary">SUBMIT&#128516;</button></a></h3>
          
       
       

@@ -7,11 +7,10 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New URL</a> 
-        <a class="nav-item nav-link" class="btn btn-primary" href="/register">Register</a>     
-     <%if (email) {%>
+        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>      
       </div>
-      <div style='float: right; margin-left: auto;'>
+    <% if (typeof email === 'string') {%>
+      <div style='float: right; margin-left: auto; justify-content: center; align-items: baseline; flex-direction: row;'>
         <form class="form-inline" action="/login" method="POST" >
           <div class="form-group mb-2">
             <label for="username" style="margin-right: 10em;">Logged in as: <%=email%></label>
@@ -20,18 +19,25 @@
           </div>
         </form>
       </div>
-      <%} else {%>
+    <%} else {%>
+      <div class="form-inline" style='float: right; margin-left: auto; justify-content: center; align-items: baseline; flex-direction: row;'>
+        
+        <div>
+          <a href="/register"><button  type="submit" class="btn btn-primary">Register</button></a>
+        </div>
+        <div style="display:table-cell; width: 1em; height: 1em;"></div>
+        <div>
+          <form class="form-inline" action="/login" method="GET" >
+            <div class="form-group mb-2">
+              <label for="username" style="display: none;">email</label>
+              <input class="form-control" type="text" name="username" placeholder="username" style="width: 300px; margin: 1em; display: none;">
+              <a href="/login"><button type="submit" class="btn btn-primary">login</button></a>
+            </div>
+          </form>
+        </div>
+
       </div>
-      <div style='float: right; margin-left: auto;'>
-        <form class="form-inline" action="/login" method="GET" >
-          <div class="form-group mb-2">
-            <label for="username" style="display: none;">email</label>
-            <input class="form-control" type="text" name="username" placeholder="username" style="width: 300px; margin: 1em; display: none;">
-            <a href="/login"><button type="submit" class="btn btn-primary">login</button></a>
-          </div>
-        </form>
-      </div>
-      <% } %>
-    </div>
+    <% } %>
+
   </nav>
 </header>
