@@ -177,7 +177,10 @@ app.get("/login", (req, res) => {
 
 app.get("/", (req, res) => {
   if (signInCheck(req)) {
-    const templateVars = { urls: querry_DB_By_ID(req.session.user_id, urlDatabase), email: fetchEmailById(req.session.user_id, users)};
+    const templateVars = { 
+      urls: querry_DB_By_ID(req.session.user_id, urlDatabase), 
+      email: fetchEmailById(req.session.user_id, users)
+    };
     res.render("urls_index", templateVars);
   } else {
     const templateVars = {
@@ -192,7 +195,10 @@ app.get("/", (req, res) => {
 
 app.get("/urls", (req, res) => {  
   if (signInCheck(req)) {
-    const templateVars = { urls: querry_DB_By_ID(req.session.user_id, urlDatabase), email: fetchEmailById(req.session.user_id, users)};
+    const templateVars = { 
+      urls: querry_DB_By_ID(req.session.user_id, urlDatabase), 
+      email: fetchEmailById(req.session.user_id, users)
+    };
     res.render("urls_index", templateVars);
   } else {    
     const templateVars = {
@@ -384,7 +390,6 @@ app.post('/urlUseCount', (req, res) => {
     res.render('urls_login', templateVars);
   }
 })
-
 
 //--------------------------------------------------------------------------
 
