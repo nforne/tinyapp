@@ -21,7 +21,7 @@
 - -express
 - -method-override any other Node packages you may have.
 
-## /*Open to improvements and further addaptions*/
+## /*Open to improvements and further addaptations*/
 
 ## Final Product
 
