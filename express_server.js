@@ -89,7 +89,7 @@ const {flatUrlDB, generateRandomString, emailCheck, fetchEmailById, querry_DB_By
 //--------------------------------------------------------------------------
 
 app.get("/register", (req, res) => {
-  const templateVars = { urls: {}, email:null};
+  const templateVars = { script : null};
   res.render('user_registrationf', templateVars);
 });
 
@@ -98,10 +98,17 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {  
 
   if (req.body.email.length === 0 || req.body.password.length === 0) {
-    res.send("<html><body>404 \n<b>Email or password field empty. Not optional, must be filled</b></body></html>\n");
-    
+    const templateVars = {
+      script : '404 Oops! Email or password field empty. Not optional, must be filled. Thank you!'
+    }    
+    res.render('user_registrationf', templateVars);
+        
   } else if (emailCheck(req.body.email, users)) {
-    res.send("<html><body>404 \n<b>Email already in use by someone else! Try another.</b></body></html>\n");
+    const templateVars = {
+      script : '404 Oops! Email already in use by someone else! Try another. Thank you!'
+    }    
+    res.render('user_registrationf', templateVars);
+    
     
   } else {
     let cookieValue = '';
@@ -149,14 +156,17 @@ app.post("/login", (req, res) => {
       req.session = null;
       res.render("urls_login");
   } else {
-    res.render('urls_alert');
+    const templateVars = {
+      script : '403 Oops! Register or Login properly before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 });
 
 //--------------------------------------------------------------------------
 
 app.get("/login", (req, res) => {
-  const templateVars = {email: null};
+  const templateVars = {script: null};
   res.render("urls_login", templateVars);
 });
 
@@ -167,7 +177,10 @@ app.get("/", (req, res) => {
     const templateVars = { urls: querry_DB_By_ID(req.session.user_id, urlDatabase), email: fetchEmailById(req.session.user_id, users)};
     res.render("urls_index", templateVars);
   } else {
-    res.render('urls_alert');       
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);       
   }
   
 });
@@ -179,7 +192,10 @@ app.get("/urls", (req, res) => {
     const templateVars = { urls: querry_DB_By_ID(req.session.user_id, urlDatabase), email: fetchEmailById(req.session.user_id, users)};
     res.render("urls_index", templateVars);
   } else {    
-    res.render('urls_alert')
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 });
 
@@ -193,7 +209,10 @@ app.get("/urls/new", (req, res) => {
     };
     res.render("urls_new", templateVars);
   } else {
-    res.render('urls_alert')
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 });
 
@@ -215,7 +234,10 @@ app.post("/urls", (req, res) => {
   } else if (signInCheck(req)) {
 
   } else {
-    res.render('urls_alert');
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 });
 
@@ -244,7 +266,10 @@ app.put('/urls/:shortURL/update', (req, res) => {
       }
     }
   } else {
-    res.render('urls_alert');
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 });
 
@@ -255,7 +280,10 @@ app.delete('/urls/:shortURL/delete', (req, res) => {
     delete urlDatabase[req.params.shortURL];
     res.redirect("/urls");
   } else {
-    res.render('urls_alert');
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 });
 
@@ -266,7 +294,10 @@ app.get("/u/:shortURL", (req, res) => {
     const longURL = urlDatabase[req.params.shortURL]['longURL'];
     res.redirect(longURL);
   } else {
-    res.render('urls_alert');
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 });
 
@@ -279,7 +310,10 @@ app.get("/urls/:shortURL", (req, res) => {
   } else if (signInCheck(req)) {
     res.redirect(urlDatabase[req.params.shortURL]['longURL'])
   } else {
-    res.render('urls_alert');
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 });
 
@@ -289,7 +323,10 @@ app.get("/urls.json", (req, res) => {
   if (signInCheck(req)) {    
     res.json(urlDatabase);
   } else {
-    res.render('urls_alert');
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 });
 
@@ -315,7 +352,10 @@ app.post('/urlUseCount', (req, res) => {
   if (signInCheck(req) && req.body.shortURL) { //-------------------------to track url use for analytics-------------------------------
     urlDatabase[req.body.shortURL]['urlUseCount'] += 1;
   } else {
-    res.render('urls_alert');
+    const templateVars = {
+      script : '403 Oops! Return to Registration or Login before.... Thank you!'
+    }    
+    res.render('urls_login', templateVars);
   }
 })
 

@@ -14,10 +14,16 @@
   <body>
 
     <%- include('partials/_header') %>
-
-    <script>
-      alert('403 Oops! Go back and Register or Login before.... Thank you!');
-    </script>
+    
+    
+    
+    <% if (script) {%>
+      <div>
+        <%= script %>
+      </div>
+      <% } %>
+    
+    
 
     <main class="card-header" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">      
         <h3>Login</h3>
