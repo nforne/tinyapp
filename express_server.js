@@ -103,12 +103,11 @@ app.post("/register", (req, res) => {
     }    
     res.render('user_registrationf', templateVars);
         
-  } else if (emailCheck(req.body.email, users)) {
+  } else if (emailCheck(req.body.email, users)[0]) {
     const templateVars = {
       script : '404 Oops! Email already in use by someone else! Try another. Thank you!'
     }    
-    res.render('user_registrationf', templateVars);
-    
+    res.render('user_registrationf', templateVars);    
     
   } else {
     let cookieValue = '';
@@ -136,21 +135,25 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {  
 
-  if (req.body.email && req.body.password) {
-    const usersdbIDs = Object.keys(users);
-    for (let i of usersdbIDs) {  
-      if (users[i]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[i]['password'])) {
+  if (req.body.email && req.body.password) {       
+    const check = emailCheck(req.body.email, users);
+    if (check[0] && bcrypt.compareSync(req.body.password, users[check[1]]['password'])) {
 
-        loginID.push(users[i]['id']);
+      loginID.push(users[check[1]]['id']);
 
-        req.session.user_id = users[i]['id'];
-        const templateVars = {
-          email: req.body.email,
-          urls: querry_DB_By_ID(req.session.user_id, urlDatabase)      
-        }
-        res.render("urls_index", templateVars);
+      req.session.user_id = users[check[1]]['id'];
+      const templateVars = {
+        email: req.body.email,
+        urls: querry_DB_By_ID(req.session.user_id, urlDatabase)      
       }
-     }
+      res.render("urls_index", templateVars);  
+    } else {
+      const templateVars = {
+        script : '403 Oops! Email or passward incorrect. Please, return to registration or correct that before.... Thank you!'
+      }    
+      res.render('urls_login', templateVars);
+    }
+
   } else if (signInCheck(req)) {
       loginID.splice(loginID.indexOf(req.session.user_id), 1);
       req.session = null;

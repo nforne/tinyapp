@@ -27,10 +27,10 @@ const emailCheck = (email, users) => {
   const usersdbIDs = Object.keys(users);
   for (let i of usersdbIDs) {
     if (users[i]['email'] === email) {
-      return true;
+      return [true, i];
     } 
   }
-  return false;
+  return [false, 0];
 };
 
 //--------------------------------------
