@@ -1,4 +1,27 @@
 //--------------------------------------
+
+const emailCheck = (email, users) => {
+  const usersdbIDs = Object.keys(users);
+  for (let i of usersdbIDs) {
+    if (users[i]['email'] === email) {
+      return [true, i];
+    } 
+  }
+  return [false, 0];
+};
+
+//--------------------------------------
+
+const fetchEmailById = (id, users) => {
+  const usersdbIDs = Object.keys(users);
+  for (let i of usersdbIDs) {
+    if (users[i]['id'] === id) {
+      return users[i]['email'];
+    }
+  }
+}
+
+//--------------------------------------
 const flatUrlDB = (DB) => { // reduce db to a simple k-v pair object
   const urlDBKeys = Object.keys(DB);
   let outPut = {};
@@ -23,28 +46,6 @@ const querry_DB_By_ID = (id, urlDatabase) => { // to retrieve only data of a par
 
 //--------------------------------------
 
-const emailCheck = (email, users) => {
-  const usersdbIDs = Object.keys(users);
-  for (let i of usersdbIDs) {
-    if (users[i]['email'] === email) {
-      return [true, i];
-    } 
-  }
-  return [false, 0];
-};
-
-//--------------------------------------
-
-const fetchEmailById = (id, users) => {
-  const usersdbIDs = Object.keys(users);
-  for (let i of usersdbIDs) {
-    if (users[i]['id'] === id) {
-      return users[i]['email'];
-    }
-  }
-}
-//--------------------------------------
-
 function generateRandomString(n) {
   const nums_letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   const alphanumeric = nums_letters.split('');
@@ -58,4 +59,4 @@ function generateRandomString(n) {
 
 //--------------------------------------
 
-module.exports = {flatUrlDB, generateRandomString, emailCheck, fetchEmailById, querry_DB_By_ID};
+module.exports = { generateRandomString, emailCheck, fetchEmailById, querry_DB_By_ID };

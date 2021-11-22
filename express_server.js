@@ -84,7 +84,7 @@ const signInCheck = (req) => {
 
 //--------------------------------------------------------------------------
 
-const {flatUrlDB, generateRandomString, emailCheck, fetchEmailById, querry_DB_By_ID } = require('./helpers');
+const { generateRandomString, emailCheck, fetchEmailById, querry_DB_By_ID } = require('./helpers');
 
 //--------------------------------------------------------------------------
 
@@ -133,7 +133,7 @@ app.post("/register", (req, res) => {
 
 //--------------------------------------------------------------------------
 
-app.post("/login", (req, res) => {  
+app.post("/login", (req, res) => {  // handles POST/logout too
 
   if (req.body.email && req.body.password) {       
     const check = emailCheck(req.body.email, users);
@@ -208,7 +208,6 @@ app.get("/urls/new", (req, res) => {
   if (signInCheck(req)) {    
     const templateVars = {
       email: fetchEmailById(req.session.user_id, users),
-      urls: flatUrlDB(urlDatabase)  //----------------------------------------------------------
     };
     res.render("urls_new", templateVars);
   } else {
@@ -228,7 +227,12 @@ app.post("/urls", (req, res) => {
     while (true) {      // to make sure there is no shortURL duplication
       let shortURL = generateRandomString(6);
       if (!urlDBKeys.includes(shortURL)) {
-        urlDatabase[shortURL] = {'longURL': req.body.longURL, 'userID': req.session.user_id, 'urlUseCount': 0};
+
+        urlDatabase[shortURL] = {
+          'longURL': req.body.longURL, 
+          'userID': req.session.user_id, 
+          'urlUseCount': 0
+        };
           
         res.redirect(`/urls/${shortURL}`);
         break;
@@ -246,23 +250,25 @@ app.post("/urls", (req, res) => {
 
 //--------------------------------------------------------------------------
 
-app.put('/urls/:shortURL/update', (req, res) => { 
-  if (signInCheck(req) && req.session.user_id === urlDatabase[req.params.shortURL]['userID']) { // only owners have create update and delete powers
+app.put('/urls/:shortURL/update', (req, res) => { // handles POST /urls/:id
+
+  // only owners have create update and delete powers
+  if (signInCheck(req) && req.session.user_id === urlDatabase[req.params.shortURL]['userID']) { 
 
     const urlDBKeys = Object.keys(urlDatabase);
-    let longURL = [flatUrlDB(urlDatabase)[req.params.shortURL]];  
-    for (let i of urlDBKeys) {
-      if (urlDatabase[i]['longURL'] === longURL[0]) {
-        delete urlDatabase[i];
-      }
-    }
-    
+    let longURL = [urlDatabase[req.params.shortURL]['longURL']]; 
+    delete urlDatabase[req.params.shortURL];
+
     while (true) { // check to make sure there is no shortURL duplication
       let shortURL = generateRandomString(6);
       
       if (!urlDBKeys.includes(shortURL)) {    
         
-        urlDatabase[shortURL] = {'longURL':longURL[0],'userID': req.session.user_id, 'urlUseCount':0};      
+        urlDatabase[shortURL] = {
+          'longURL':longURL[0],
+          'userID': req.session.user_id, 
+          'urlUseCount':0
+        };      
        
         res.redirect(`/urls/${shortURL}`);
         break;
@@ -293,25 +299,40 @@ app.delete('/urls/:shortURL/delete', (req, res) => {
 //--------------------------------------------------------------------------
 
 app.get("/u/:shortURL", (req, res) => {
-  if (signInCheck(req)) {    
-    const longURL = urlDatabase[req.params.shortURL]['longURL'];
-    res.redirect(longURL);
-  } else {
-    const templateVars = {
-      script : '403 Oops! Return to Registration or Login before.... Thank you!'
-    }    
-    res.render('urls_login', templateVars);
-  }
+    if (Object.keys(urlDatabase).includes(req.params.shortURL)) {
+      const longURL = urlDatabase[req.params.shortURL]['longURL'];
+      res.redirect(longURL);
+    } else {
+      const templateVars = { 
+        urls: null,
+        email: null,
+        script : '403 Oops! shortURL does not exist.... Thank you!'
+        };
+      res.render("urls_indexPublic", templateVars);
+    }
+
 });
 
 //--------------------------------------------------------------------------
 
 app.get("/urls/:shortURL", (req, res) => {
   if (signInCheck(req) && req.session.user_id === urlDatabase[req.params.shortURL]['userID']) {
-    const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]['longURL'], email: fetchEmailById(req.session.user_id, users)};
+    const templateVars = { 
+      shortURL: req.params.shortURL, 
+      longURL: urlDatabase[req.params.shortURL]['longURL'], 
+      email: fetchEmailById(req.session.user_id, users)
+    };
     res.render("urls_show", templateVars);
   } else if (signInCheck(req)) {
-    res.redirect(urlDatabase[req.params.shortURL]['longURL'])
+        
+    const templateVars = {
+      shortURL: null, 
+      longURL: null, 
+      email: fetchEmailById(req.session.user_id, users),
+      script : '403 Oops! url not yours.... Thank you!'      
+    }
+    res.render("urls_show", templateVars);
+
   } else {
     const templateVars = {
       script : '403 Oops! Return to Registration or Login before.... Thank you!'
@@ -319,6 +340,7 @@ app.get("/urls/:shortURL", (req, res) => {
     res.render('urls_login', templateVars);
   }
 });
+
 
 //--------------------------------------------------------------------------
 
@@ -335,8 +357,8 @@ app.get("/urls.json", (req, res) => {
 
 //--------------------------------------------------------------------------
 
-app.get ('/public', (req, res) => {  // demo view
-  const urlDBKeys = Object.keys(sampleUrlDB);  //--------------------------------------------------
+app.get ('/public', (req, res) => {  //-------------demo view--------------- 
+  const urlDBKeys = Object.keys(sampleUrlDB);  
   let outPut = {};
   for (let i of urlDBKeys) {
     outPut[i] = sampleUrlDB[i]['longURL'];
@@ -349,10 +371,11 @@ app.get ('/public', (req, res) => {  // demo view
     res.render("urls_indexPublic", templateVars);
   }
 }) 
+
 //--------------------------------------------------------------------------
 
 app.post('/urlUseCount', (req, res) => {
-  if (signInCheck(req) && req.body.shortURL) { //-------------------------to track url use for analytics-------------------------------
+  if (signInCheck(req) && req.body.shortURL) { //-------------------------to track url use for analytics. To be continued -------------------------------
     urlDatabase[req.body.shortURL]['urlUseCount'] += 1;
   } else {
     const templateVars = {

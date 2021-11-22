@@ -10,6 +10,13 @@
 </head>
 <body>
   <%- include('./partials/_header') %>
+
+  <% if (typeof script === 'string') {%>
+    <div>
+      <%= script %>
+    </div>
+    <% } %>
+    
   <main style="margin: 1em;">
     <h3>My URLs</h3>
     <table class="table">
