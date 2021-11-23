@@ -110,7 +110,6 @@ app.post("/register", (req, res) => {
     res.render('user_registrationf', templateVars);    
     
   } else {
-    let cookieValue = '';
     const usersdbIDs = Object.keys(users);
 
     while (true) { // a check to make sure there is no userID duplication at auto generate
@@ -121,12 +120,11 @@ app.post("/register", (req, res) => {
         bodyjson['password'] = bcrypt.hashSync(req.body.password, 10);
         users[randomID] = bodyjson
         loginID.push(randomID);
-        cookieValue = randomID;
+        req.session.user_id = randomID;
         break;
       }
     }
-    const templateVars = { urls: querry_DB_By_ID(cookieValue, urlDatabase), email: req.body.email};
-    req.session.user_id = cookieValue;
+    const templateVars = { urls: null, email: req.body.email};
     res.render('urls_index', templateVars);
   }
 });
