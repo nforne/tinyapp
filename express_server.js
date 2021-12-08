@@ -130,7 +130,7 @@ app.get("/urls/new", (req, res) => {
 
 //--------------------------------------------------------------------------
 app.get("/urls/:shortURL", (req, res) => {
-  if (signInCheck(req), urlDatabase[req.params.shortURL]) {
+  if (signInCheck(req) && urlDatabase[req.params.shortURL]) {
     
     const inputDetail = urlDatabase[req.params.shortURL]['userID']
     if ( req.session.user_id === inputDetail ) {
