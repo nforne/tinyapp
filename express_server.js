@@ -132,7 +132,6 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   
   if (signInCheck(req) && urlDatabase[req.params.shortURL]) {
-    
     const inputDetail = urlDatabase[req.params.shortURL]['userID']
     if ( req.session.user_id === inputDetail ) {
       const templateVars = {
@@ -142,6 +141,7 @@ app.get("/urls/:shortURL", (req, res) => {
       };
       res.render("urls_show", templateVars);
     } 
+
   } else if (signInCheck(req)) {
         
     const templateVars = {
@@ -199,8 +199,6 @@ app.post("/urls", (req, res) => {
 //--------------------------------------------------------------------------
 app.put("/urls/:shortURL", (req, res) => {   // to update shortURL with entered longURL
 
-  console.log(Object.keys(req.body)) //----------------------------------x
-
   if (signInCheck(req) && !Object.keys(req.body)[0]) {
     const templateVars = {
       shortURL: null,
@@ -217,7 +215,6 @@ app.put("/urls/:shortURL", (req, res) => {   // to update shortURL with entered 
   } else {
     errorRedirect(res);
   }
- 
 });
 
 //--------------------------------------------------------------------------
@@ -235,7 +232,6 @@ app.delete("/urls/:shortURL/delete", (req, res) => {
   } else {
     errorRedirect(res);
   }
- 
 });
 
 //--------------------------------------------------------------------------
@@ -277,11 +273,9 @@ app.post("/login", (req, res) => {
       };
       res.render('urls_login', templateVars);
     }
-
   } else {
     errorRedirect(res);
   }
- 
 });
 
 //--------------------------------------------------------------------------
@@ -301,7 +295,6 @@ app.post("/register", (req, res) => {
     
   } else {
     const usersdbIDs = Object.keys(users);
-
     while (true) { // a check to make sure there is no userID duplication at auto generate
       let randomID = generateRandomString(4);
       if (!usersdbIDs.includes(randomID)) {
@@ -317,7 +310,6 @@ app.post("/register", (req, res) => {
     const templateVars = { urls: null, email: req.body.email};
     res.render('urls_index', templateVars);
   }
- 
 });
 
 //--------------------------------------------------------------------------
@@ -330,7 +322,6 @@ app.post("/logout", (req, res) => {
   } else {
     res.render("urls_login");
   }
- 
 });
 
 //--------------------------------------------------------------------------
