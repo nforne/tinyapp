@@ -22,17 +22,15 @@
         <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
       </div>
       
-      <form class="card-body" method="POST" action='/urls/<%= shortURL %>/update?_method=PUT'>
-        </a><button type="submit" value='<%= longURL %>' class="btn btn-primary" >Update</button>
-        <label for="Update"><% 'shortURL' %></label> 
-      </form>  
-
-      <form class="form-inline" class="card text-center" method="POST" action='/urls/:shortURL/update' > 
-        <div class="form-group mb-2" style="margin-left: 28em;">           
-          <label for="shortURL">Enter URL:</label>
-          <input class="form-control" type="text" name="longURL" placeholder="http://www.google.com" style="width: 300px; margin: 1em">            
+      <form name="update" class="card-body" method="POST" action='/urls/<%= shortURL %>?_method=PUT' style="display: flex; flex-direction: column; justify-content: center; align-items: center;align-content: space-around;">
+        <div style="display: flex; flex-direction: row; justify-content: center; align-content: space-around; align-items: center;">
+          <label for="<%= shortURL %>">Enter longURL:</label>
+          <input class="form-control" type="text" name='<%= shortURL %>' placeholder=" http://www.google.com" style="width: 300px; margin: 1em"> 
+          <input type="submit" class="btn btn-primary" value="Update">
         </div>
-      </form>      
+      </form> 
+
+    <br>
       
     <h3 class="card-body"><a href="/urls"><button class="btn btn-primary">SUBMIT&#128516;</button></a></h3>
          

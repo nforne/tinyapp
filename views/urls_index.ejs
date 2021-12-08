@@ -35,7 +35,7 @@
             <td><a href= <%= urls[url] %> ><%= url %></a></td>
             <td><%= urls[url] %></td>
             <td class="card-body">
-              <a href= http://localhost:8080/urls/<%= url %> ><button class="btn btn-primary">EDIT</button></a>
+              <a href= '/urls/<%= url %>' ><button class="btn btn-primary">EDIT</button></a>
             </td>
             <td>
               <form method="POST" action='/urls/<%=url%>/delete?_method=DELETE'>                                
