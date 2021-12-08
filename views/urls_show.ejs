@@ -28,8 +28,8 @@
           <script>
             document.addEventListener("DOMContentLoaded", () => {
               document.getElementById("updateBtn").addEventListener('click', (event) => {
-                const x = document.getElementById("update").value;
-                 if (x.length ===  0 || document.getElementById("update").getAttribute('name') === "NULL" ) {
+                const x = document.getElementById("update");
+                 if (x.value.length ===  0 || x.getAttribute('name') === "NULL" ) {
                   event.preventDefault()
                  }
                })
