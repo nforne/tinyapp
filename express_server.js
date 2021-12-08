@@ -130,6 +130,7 @@ app.get("/urls/new", (req, res) => {
 
 //--------------------------------------------------------------------------
 app.get("/urls/:shortURL", (req, res) => {
+  
   if (signInCheck(req) && urlDatabase[req.params.shortURL]) {
     
     const inputDetail = urlDatabase[req.params.shortURL]['userID']
@@ -197,11 +198,10 @@ app.post("/urls", (req, res) => {
 
 //--------------------------------------------------------------------------
 app.put("/urls/:shortURL", (req, res) => {   // to update shortURL with entered longURL
-  
-  if (signInCheck(req) && Object.keys(req.body)[0] && req.session.user_id === urlDatabase[Object.keys(req.body)[0]]['userID']) {
-    urlDatabase[Object.keys(req.body)[0]]['longURL'] = req.body[Object.keys(req.body)[0]]; 
-    res.redirect('/urls');
-  } else if (signInCheck(req)) {
+
+  console.log(Object.keys(req.body)) //----------------------------------x
+
+  if (signInCheck(req) && !Object.keys(req.body)[0]) {
     const templateVars = {
       shortURL: null,
       longURL: null,
@@ -209,6 +209,11 @@ app.put("/urls/:shortURL", (req, res) => {   // to update shortURL with entered 
       script : '403 Oops! The requested url is either not yours or does not exist. Thank you!'
     };
     res.render("urls_show", templateVars);
+
+  } else if (signInCheck(req) && req.session.user_id === urlDatabase[Object.keys(req.body)[0]]['userID']) {
+    urlDatabase[Object.keys(req.body)[0]]['longURL'] = req.body[Object.keys(req.body)[0]]; 
+    res.redirect('/urls');
+
   } else {
     errorRedirect(res);
   }

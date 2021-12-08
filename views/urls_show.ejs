@@ -24,9 +24,19 @@
       
       <form name="update" class="card-body" method="POST" action='/urls/<%= shortURL %>?_method=PUT' style="display: flex; flex-direction: column; justify-content: center; align-items: center;align-content: space-around;">
         <div style="display: flex; flex-direction: row; justify-content: center; align-content: space-around; align-items: center;">
-          <label for="<%= shortURL %>">Enter longURL:</label>
-          <input class="form-control" type="text" name='<%= shortURL %>' placeholder=" http://www.google.com" style="width: 300px; margin: 1em"> 
-          <input type="submit" class="btn btn-primary" value="Update">
+          <label for="<%= shortURL ? shortURL : 'NULL' %>">Enter longURL:</label>
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              document.getElementById("updateBtn").addEventListener('click', (event) => {
+                const x = document.getElementById("update").value;
+                 if (x.length ===  0 || document.getElementById("update").getAttribute('name') === "NULL" ) {
+                  event.preventDefault()
+                 }
+               })
+             });
+          </script>
+          <input id='update' class="form-control" type="text" name='<%= shortURL ? shortURL : "NULL" %>' placeholder=" http://www.google.com" style="width: 300px; margin: 1em"> 
+          <input id='updateBtn' type="submit" class="btn btn-primary" value="Update">
         </div>
       </form> 
 
