@@ -130,13 +130,17 @@ app.get("/urls/new", (req, res) => {
 
 //--------------------------------------------------------------------------
 app.get("/urls/:shortURL", (req, res) => {
-  if (signInCheck(req) && req.params.shortURL && req.session.user_id === urlDatabase[req.params.shortURL]['userID']) {
-    const templateVars = {
-      shortURL: req.params.shortURL,
-      longURL: urlDatabase[req.params.shortURL]['longURL'],
-      email: fetchEmailById(req.session.user_id, users)
-    };
-    res.render("urls_show", templateVars);
+  if (signInCheck(req), urlDatabase[req.params.shortURL]) {
+    
+    const inputDetail = urlDatabase[req.params.shortURL]['userID']
+    if ( req.session.user_id === inputDetail ) {
+      const templateVars = {
+        shortURL: req.params.shortURL,
+        longURL: urlDatabase[req.params.shortURL]['longURL'],
+        email: fetchEmailById(req.session.user_id, users)
+      };
+      res.render("urls_show", templateVars);
+    } 
   } else if (signInCheck(req)) {
         
     const templateVars = {
@@ -192,10 +196,10 @@ app.post("/urls", (req, res) => {
 });
 
 //--------------------------------------------------------------------------
-app.put("/urls/:shortURL", (req, res) => {
+app.put("/urls/:shortURL", (req, res) => {   // to update shortURL with entered longURL
   
   if (signInCheck(req) && Object.keys(req.body)[0] && req.session.user_id === urlDatabase[Object.keys(req.body)[0]]['userID']) {
-    urlDatabase[Object.keys(req.body)[0]]['longURL'] = req.body[Object.keys(req.body)[0]]; // to update shortURL with entered longURL
+    urlDatabase[Object.keys(req.body)[0]]['longURL'] = req.body[Object.keys(req.body)[0]]; 
     res.redirect('/urls');
   } else if (signInCheck(req)) {
     const templateVars = {
