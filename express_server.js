@@ -140,7 +140,15 @@ app.get("/urls/:shortURL", (req, res) => {
         email: fetchEmailById(req.session.user_id, users)
       };
       res.render("urls_show", templateVars);
-    } 
+    } else {
+      const templateVars = {
+        shortURL: null,
+        longURL: null,
+        email: fetchEmailById(req.session.user_id, users),
+        script : '403 Oops! The requested url is not yours. Thank you!'
+      };
+      res.render("urls_show", templateVars);
+    }
 
   } else if (signInCheck(req)) {
         
@@ -148,7 +156,7 @@ app.get("/urls/:shortURL", (req, res) => {
       shortURL: null,
       longURL: null,
       email: fetchEmailById(req.session.user_id, users),
-      script : '403 Oops! The requested url is either not yours or does not exist. Thank you!'
+      script : '403 Oops! The requested url does not exist in our records. Thank you!'
     };
     res.render("urls_show", templateVars);
 
