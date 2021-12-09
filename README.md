@@ -1,4 +1,4 @@
-#### TinyApp Project
+# TinyApp Project
 ## A simple secure web application to grant registered users private space to keep a collection of their urls in shortened form. Its a full stack web application built with Node and Express. 
 * Shorten long URLs (à la bit.ly)
 
